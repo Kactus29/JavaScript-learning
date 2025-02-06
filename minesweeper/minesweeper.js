@@ -1,18 +1,21 @@
+// Initialisation des variables globales
 let board = [];
 let rows = 8;
 let columns = 8;
 
 let minesCount = 10;
-let minesLocation = []; // "2-2", "3-4", "2-1"
+let minesLocation = []; // Emplacements des mines, ex: "2-2", "3-4", "2-1"
 
-let tilesClicked = 0; //goal to click all tiles except the ones containing mines
+let tilesClicked = 0; // Nombre de cases cliquées (objectif: cliquer sur toutes les cases sauf celles contenant des mines)
 let gameOver = false;
-let flagsPlaced = 0;
+let flagsPlaced = 0; // Nombre de drapeaux placés
 
+// Fonction appelée lorsque la fenêtre se charge
 window.onload = function() {
     startGame();
 }
 
+// Fonction pour placer les mines aléatoirement sur le plateau
 function setMines() {
     let minesLeft = minesCount;
     while (minesLeft > 0) { 
@@ -27,18 +30,19 @@ function setMines() {
     }
 }
 
+// Fonction pour démarrer le jeu
 function startGame() {
     document.getElementById("mines-count").innerText = minesCount - flagsPlaced;
     setMines();
 
-    //populate our board
+    // Remplir le plateau
     for (let r = 0; r < rows; r++) {
         let row = [];
         for (let c = 0; c < columns; c++) {
             let tile = document.createElement("div");
             tile.id = r.toString() + "-" + c.toString();
             tile.addEventListener("click", clickTile);
-            tile.addEventListener("contextmenu", placeFlag); // Right-click to place flag
+            tile.addEventListener("contextmenu", placeFlag); // Clic droit pour placer un drapeau
             document.getElementById("board").append(tile);
             row.push(tile);
         }
@@ -48,8 +52,9 @@ function startGame() {
     console.log(board);
 }
 
+// Fonction pour placer ou retirer un drapeau
 function placeFlag(e) {
-    e.preventDefault(); // Prevent the context menu from appearing
+    e.preventDefault(); // Empêcher le menu contextuel de s'afficher
     if (gameOver || this.classList.contains("tile-clicked")) {
         return;
     }
@@ -65,6 +70,7 @@ function placeFlag(e) {
     document.getElementById("mines-count").innerText = minesCount - flagsPlaced;
 }
 
+// Fonction appelée lorsqu'une case est cliquée
 function clickTile() {
     if (gameOver || this.classList.contains("tile-clicked") || this.innerText == "🚩") {
         return;
@@ -88,6 +94,7 @@ function clickTile() {
     checkMine(r, c);
 }
 
+// Fonction pour révéler toutes les mines lorsque le jeu est terminé
 function revealMines() {
     for (let r = 0; r < rows; r++) {
         for (let c = 0; c < columns; c++) {
@@ -100,6 +107,7 @@ function revealMines() {
     }
 }
 
+// Fonction pour vérifier les mines autour d'une case
 function checkMine(r, c) {
     if (r < 0 || r >= rows || c < 0 || c >= columns) {
         return;
@@ -113,19 +121,19 @@ function checkMine(r, c) {
 
     let minesFound = 0;
 
-    //top 3
-    minesFound += checkTile(r-1, c-1);      //top left
-    minesFound += checkTile(r-1, c);        //top 
-    minesFound += checkTile(r-1, c+1);      //top right
+    // Vérifier les 3 cases du haut
+    minesFound += checkTile(r-1, c-1);      // en haut à gauche
+    minesFound += checkTile(r-1, c);        // en haut
+    minesFound += checkTile(r-1, c+1);      // en haut à droite
 
-    //left and right
-    minesFound += checkTile(r, c-1);        //left
-    minesFound += checkTile(r, c+1);        //right
+    // Vérifier les cases à gauche et à droite
+    minesFound += checkTile(r, c-1);        // à gauche
+    minesFound += checkTile(r, c+1);        // à droite
 
-    //bottom 3
-    minesFound += checkTile(r+1, c-1);      //bottom left
-    minesFound += checkTile(r+1, c);        //bottom 
-    minesFound += checkTile(r+1, c+1);      //bottom right
+    // Vérifier les 3 cases du bas
+    minesFound += checkTile(r+1, c-1);      // en bas à gauche
+    minesFound += checkTile(r+1, c);        // en bas
+    minesFound += checkTile(r+1, c+1);      // en bas à droite
 
     if (minesFound > 0) {
         board[r][c].innerText = minesFound;
@@ -133,21 +141,20 @@ function checkMine(r, c) {
     } else {
         board[r][c].innerText = "";
         
-        //top 3
-        checkMine(r-1, c-1);    //top left
-        checkMine(r-1, c);      //top
-        checkMine(r-1, c+1);    //top right
+        // Révéler les cases adjacentes
+        checkMine(r-1, c-1);    // en haut à gauche
+        checkMine(r-1, c);      // en haut
+        checkMine(r-1, c+1);    // en haut à droite
 
-        //left and right
-        checkMine(r, c-1);      //left
-        checkMine(r, c+1);      //right
+        checkMine(r, c-1);      // à gauche
+        checkMine(r, c+1);      // à droite
 
-        //bottom 3
-        checkMine(r+1, c-1);    //bottom left
-        checkMine(r+1, c);      //bottom
-        checkMine(r+1, c+1);    //bottom right
+        checkMine(r+1, c-1);    // en bas à gauche
+        checkMine(r+1, c);      // en bas
+        checkMine(r+1, c+1);    // en bas à droite
     }
 
+    // Vérifier si toutes les cases non minées ont été cliquées
     if (tilesClicked == rows * columns - minesCount) {
         document.getElementById("mines-count").innerText = "Cleared";
         gameOver = true;
@@ -159,6 +166,7 @@ function checkMine(r, c) {
     }
 }
 
+// Fonction pour vérifier si une case contient une mine
 function checkTile(r, c) {
     if (r < 0 || r >= rows || c < 0 || c >= columns) {
         return 0;
