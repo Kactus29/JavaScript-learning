@@ -81,7 +81,7 @@ function clickTile() {
         gameOver = true;
         revealMines();
         setTimeout(() => {
-            if (confirm("Game Over! You hit a mine. Do you want to play again?")) {
+            if (confirm("Game Over! Vous êtes tombés sur une mine. Voulez-vous rejouer ?")) {
                 location.reload();
             }
         }, 100);
@@ -159,7 +159,7 @@ function checkMine(r, c) {
         document.getElementById("mines-count").innerText = "Cleared";
         gameOver = true;
         setTimeout(() => {
-            if (confirm("Congratulations! You won! Do you want to play again?")) {
+            if (confirm("Bravo! Vous avez gagné. Voulez-vous rejouer ?")) {
                 location.reload();
             }
         }, 100);
