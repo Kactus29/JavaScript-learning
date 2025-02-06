@@ -1,0 +1,14 @@
+{
+  "name": "minesweeper",
+  "version": "1.0.0",
+  "description": "Minesweeper game",
+  "main": "server.js",
+  "scripts": {
+    "start": "http-server -p 8080"
+  },
+  "devDependencies": {
+    "http-server": "^0.12.3"
+  },
+  "author": "",
+  "license": "ISC"
+}
