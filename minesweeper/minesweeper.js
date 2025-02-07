@@ -10,6 +10,10 @@ let tilesClicked = 0;
 let gameOver = false;
 let flagsPlaced = 0; 
 
+let timer; 
+let seconds = 0; 
+let timerStarted = false; 
+
 // Fonction appelée lorsque la fenêtre se charge
 window.onload = function() {
     startGame();
@@ -53,6 +57,7 @@ function startGame() {
 }
 
 // Placer ou retirer un drapeau
+// Met à jour l'affichage du nombre de mines restantes
 function placeFlag(e) {
     e.preventDefault(); // Empêcher le menu contextuel de s'afficher avec le click droit
     if (gameOver || this.classList.contains("tile-clicked")) {
@@ -76,10 +81,18 @@ function clickTile() {
         return;
     }
 
+    // Démarrer le chronomètre au premier clic
+    if (!timerStarted) {
+        startTimer();
+        timerStarted = true;
+    }
+
+    // Si al case contient une bombe, le jeu est terminé
     let tile = this;
     if (minesLocation.includes(tile.id)) {
         gameOver = true;
         revealMines();
+        stopTimer(); // Arrêter le chronomètre
         setTimeout(() => {
             if (confirm("Game Over! Vous êtes tombés sur une mine. Voulez-vous rejouer ?")) {
                 location.reload();
@@ -88,6 +101,7 @@ function clickTile() {
         return;
     }
 
+    // Check la case, pour voir s'il y a une mine
     let coords = tile.id.split("-");
     let r = parseInt(coords[0]);
     let c = parseInt(coords[1]);
@@ -109,16 +123,19 @@ function revealMines() {
 
 // Vérifier les mines autour d'une case
 function checkMine(r, c) {
+    // Si on est en dehors de la grille : rien
     if (r < 0 || r >= rows || c < 0 || c >= columns) {
         return;
     }
+    // Si la case a déjà été cliquée : rien
     if (board[r][c].classList.contains("tile-clicked")) {
         return;
     }
-
+    // Marquer la case comme cliquée
     board[r][c].classList.add("tile-clicked");
     tilesClicked += 1;
 
+    // Verif mines autour de la case
     let minesFound = 0;
 
     minesFound += checkTile(r-1, c-1);      
@@ -132,6 +149,7 @@ function checkMine(r, c) {
     minesFound += checkTile(r+1, c);        
     minesFound += checkTile(r+1, c+1);      
 
+    // Mettre a jour l'affichage de la case
     if (minesFound > 0) {
         board[r][c].innerText = minesFound;
         board[r][c].classList.add("x" + minesFound.toString());
@@ -155,6 +173,7 @@ function checkMine(r, c) {
     if (tilesClicked == rows * columns - minesCount) {
         document.getElementById("mines-count").innerText = "Cleared";
         gameOver = true;
+        stopTimer(); // Arrêter le chronomètre
         setTimeout(() => {
             if (confirm("Bravo! Vous avez gagné. Voulez-vous rejouer ?")) {
                 location.reload();
@@ -164,6 +183,7 @@ function checkMine(r, c) {
 }
 
 // Vérifier si une case contient une mine
+// Renvoie 0 si pas de bombes, 1 si une bombe est présente
 function checkTile(r, c) {
     if (r < 0 || r >= rows || c < 0 || c >= columns) {
         return 0;
@@ -172,4 +192,20 @@ function checkTile(r, c) {
         return 1;
     }
     return 0;
+}
+
+// Démarre le chronomètre
+// setInterval(fonction, delay) = Execute la fonction toutes les delay ms
+function startTimer() {
+    timer = setInterval(() => {
+        seconds++;
+        document.getElementById("timer").innerText = seconds;
+    }, 1000);
+}
+
+// Fonction pour arrêter le chronomètre
+// clearInterval arrête le setInterval, car sinon il est infini
+// Pour implémenter une durée limite, on peut utiliser setTimeout(fonction, tempsLimite)
+function stopTimer() {
+    clearInterval(timer);
 }
