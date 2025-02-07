@@ -6,16 +6,16 @@ let columns = 8;
 let minesCount = 10;
 let minesLocation = []; // Emplacements des mines, ex: "2-2", "3-4", "2-1"
 
-let tilesClicked = 0; // Nombre de cases cliquées (objectif: cliquer sur toutes les cases sauf celles contenant des mines)
+let tilesClicked = 0;
 let gameOver = false;
-let flagsPlaced = 0; // Nombre de drapeaux placés
+let flagsPlaced = 0; 
 
 // Fonction appelée lorsque la fenêtre se charge
 window.onload = function() {
     startGame();
 }
 
-// Fonction pour placer les mines aléatoirement sur le plateau
+// Placer les mines aléatoirement sur le plateau
 function setMines() {
     let minesLeft = minesCount;
     while (minesLeft > 0) { 
@@ -30,7 +30,7 @@ function setMines() {
     }
 }
 
-// Fonction pour démarrer le jeu
+// Démarrer le jeu
 function startGame() {
     document.getElementById("mines-count").innerText = minesCount - flagsPlaced;
     setMines();
@@ -52,9 +52,9 @@ function startGame() {
     console.log(board);
 }
 
-// Fonction pour placer ou retirer un drapeau
+// Placer ou retirer un drapeau
 function placeFlag(e) {
-    e.preventDefault(); // Empêcher le menu contextuel de s'afficher
+    e.preventDefault(); // Empêcher le menu contextuel de s'afficher avec le click droit
     if (gameOver || this.classList.contains("tile-clicked")) {
         return;
     }
@@ -94,7 +94,7 @@ function clickTile() {
     checkMine(r, c);
 }
 
-// Fonction pour révéler toutes les mines lorsque le jeu est terminé
+// Révéler toutes les mines lorsque le jeu est terminé
 function revealMines() {
     for (let r = 0; r < rows; r++) {
         for (let c = 0; c < columns; c++) {
@@ -107,7 +107,7 @@ function revealMines() {
     }
 }
 
-// Fonction pour vérifier les mines autour d'une case
+// Vérifier les mines autour d'une case
 function checkMine(r, c) {
     if (r < 0 || r >= rows || c < 0 || c >= columns) {
         return;
@@ -121,19 +121,16 @@ function checkMine(r, c) {
 
     let minesFound = 0;
 
-    // Vérifier les 3 cases du haut
-    minesFound += checkTile(r-1, c-1);      // en haut à gauche
-    minesFound += checkTile(r-1, c);        // en haut
-    minesFound += checkTile(r-1, c+1);      // en haut à droite
+    minesFound += checkTile(r-1, c-1);      
+    minesFound += checkTile(r-1, c);        
+    minesFound += checkTile(r-1, c+1);      
 
-    // Vérifier les cases à gauche et à droite
-    minesFound += checkTile(r, c-1);        // à gauche
-    minesFound += checkTile(r, c+1);        // à droite
+    minesFound += checkTile(r, c-1);        
+    minesFound += checkTile(r, c+1);        
 
-    // Vérifier les 3 cases du bas
-    minesFound += checkTile(r+1, c-1);      // en bas à gauche
-    minesFound += checkTile(r+1, c);        // en bas
-    minesFound += checkTile(r+1, c+1);      // en bas à droite
+    minesFound += checkTile(r+1, c-1);      
+    minesFound += checkTile(r+1, c);        
+    minesFound += checkTile(r+1, c+1);      
 
     if (minesFound > 0) {
         board[r][c].innerText = minesFound;
@@ -142,16 +139,16 @@ function checkMine(r, c) {
         board[r][c].innerText = "";
         
         // Révéler les cases adjacentes
-        checkMine(r-1, c-1);    // en haut à gauche
-        checkMine(r-1, c);      // en haut
-        checkMine(r-1, c+1);    // en haut à droite
+        checkMine(r-1, c-1);    
+        checkMine(r-1, c);      
+        checkMine(r-1, c+1);    
 
-        checkMine(r, c-1);      // à gauche
-        checkMine(r, c+1);      // à droite
+        checkMine(r, c-1);      
+        checkMine(r, c+1);      
 
-        checkMine(r+1, c-1);    // en bas à gauche
-        checkMine(r+1, c);      // en bas
-        checkMine(r+1, c+1);    // en bas à droite
+        checkMine(r+1, c-1);    
+        checkMine(r+1, c);      
+        checkMine(r+1, c+1);    
     }
 
     // Vérifier si toutes les cases non minées ont été cliquées
@@ -166,7 +163,7 @@ function checkMine(r, c) {
     }
 }
 
-// Fonction pour vérifier si une case contient une mine
+// Vérifier si une case contient une mine
 function checkTile(r, c) {
     if (r < 0 || r >= rows || c < 0 || c >= columns) {
         return 0;
